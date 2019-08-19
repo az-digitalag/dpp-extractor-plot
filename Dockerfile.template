@@ -24,9 +24,11 @@ RUN pip install --upgrade numpy && \
 
 # END ADDITIONAL INSTALLATION
 
-# command to run when starting docker
-COPY entrypoint.sh extractor_info.json extractor.py extractor_base.py configuration.py /home/extractor/
+ENV submodule_home ""
 
+COPY extractor_info.json extractor.py ${submodule_home}extractor_base.py ${submodule_home}configuration.py ${submodule_home}entrypoint.sh /home/extractor/
+
+# command to run when starting docker
 USER extractor
 ENTRYPOINT ["/home/extractor/entrypoint.sh"]
 CMD ["extractor"]

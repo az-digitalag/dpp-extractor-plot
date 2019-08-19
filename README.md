@@ -35,19 +35,20 @@ At this point there are two main approaches that can be taken; clone or submodul
 Another option is to download a .zip of the repository and unzip it into your project; we will not be covering this approach.
 If you are using [GitHub](https://github.com) you can clone the [repository](https://github.com/az-digitalag/Drone-Processing-Pipeline.git) as a [template](https://help.github.com/en/articles/creating-a-repository-from-a-template).
 
-**Clone**
+**Clone**: \
 The advantage to cloning is that you have a stable copy of the code to change as you want.
 The disadvantage of cloning is that when the template gets updated you will need to manually merge any changes.
 
-**Submodule**
+To clone the template, open a command window and change to the location of your repository on disk (for example, `cd ~/my-repo`).
+Next use git to clone the template project by running `git clone https://github.com/az-digitalag/dpp-extractor-plot.git extractor-ruby`.
+
+**Submodule**: \
 The advantage of using a submodule is that it's easy to update to the latest template code through a single command.
 The disadvantage of using a submodule is that the file system layout of a project is more complex.
 
-At this time, only cloning is documented.
-We are hoping to document submodules in the near future.
-
-To clone the template, open a command window and change to the location of your repository on disk (for example, `cd ~/my-repo`).
-Next use git to clone the template project by running `git clone https://github.com/az-digitalag/dpp-extractor-plot.git extractor-ruby`.
+To use the submodule approach, create the submodule in your folder.
+For example, `git submodule add https://github.com/az-digitalag/dpp-extractor-plot.git ./extractor` will create the submodule link and place the files in a folder named "extractor".
+Follow the submodule specific command options in the following sections.
 
 At this time you may want to check your changes into source control.
 Note that after running the [Generate Files](#generate) step we recommend deleting a file.
@@ -58,6 +59,8 @@ Depending upon your comfort level with the source control you use, you may want 
 There are two steps needed for configuration:
 1. Update the file named "configuration.py" with your values
 2. Run the "do_config.py" script - this requires Python to be installed
+
+If you are using submodules, you will need to change into the submodule folder before performing these configuration steps.
 
 ### Edit configuration.py <a name="configuration_py"/>
 
@@ -99,6 +102,8 @@ It is used in conjunction with the AUTHOR_NAME field
 Specify the full URL to your code repository.
 
 ### Generate files <a name="generate"/>
+
+If you are using submodules, this section assumes you are in the submodule folder.
 
 There are two principal files that are configuration based.
 The `do_config.py` script generates these files for you based upon the values entered into the [configuration.py](#configuration_py) file.
