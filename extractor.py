@@ -10,4 +10,4 @@ def calculate(pxarray):
     Returns:
     """
     # Replace this following line with your algorithm
-    return 0.0
+    return pxarray[:,:,1].size  # Returning the size of a single color channel in pixels

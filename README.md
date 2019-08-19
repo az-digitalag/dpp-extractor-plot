@@ -21,6 +21,12 @@ The following steps are needed when using this template. Note that all the secti
 4. Test your algorithm as outlined in the [Testing your Algorithm](#testing) section
 5. Create your Docker image and make it available as outined in the [Making a Docker Image](#docker) section
 
+**Updating**
+If you are updating your code and you aren't using submodules, you must make sure you have secured a copy of your recent files.
+Merging with or pulling from the template GitHub repository will change files and may cause loss of code - unless you have a backup.
+The easiest approach is to make a local copy of `extractor.py`, `configuration.py`, and `Dockerfile`, update the source, then copy those files back.
+If there's a breaking change (meaning one of the just listed files needs to be modified), you can use your local copy to more easily manage a merge when necessary.
+
 ## Getting Started <a name="starting"/>
 
 Before you start, make sure to have your own respoitory in which you can make your changes.
@@ -150,7 +156,6 @@ sample_plot_images/rgb_6_1_E.tif,7000
 sample_plot_images/rgb_1_2_E.tif,7000
 sample_plot_images/rgb_33_8_W.tif,7000
 sample_plot_images/rgb_5_11_W.tif,7000
-
 ```
 
 ## Making a Docker Image <a name="docker"/>
