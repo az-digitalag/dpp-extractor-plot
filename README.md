@@ -103,7 +103,7 @@ Specify the full URL to your code repository.
 
 ### Generate files <a name="generate"/>
 
-If you are using submodules, this section assumes you are in the submodule folder.
+If you are using git submodules, this section assumes you are in the submodule folder.
 
 There are two principal files that are configuration based.
 The `do_config.py` script generates these files for you based upon the values entered into the [configuration.py](#configuration_py) file.
@@ -123,6 +123,9 @@ If the script encounters a problem, an error is reported.
 Correct the caause of the reported error and try running the command again.
 
 Once you are satisfied with the results you can delete the *do_config.py\** files.
+
+If you are using git submodules, the necessary files are copied to the parent folder.
+You will be making changes to the "extractor.py" file in the parent folder (**not** in the submodule folder).
 
 This is another good point to save your files to source control.
 

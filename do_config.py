@@ -65,7 +65,7 @@ def determine_git_submodule_folder():
     # Get our folder name and try to determine if we're a submodule
     if not is_submodule:
         start_folder = os.getcwd()
-        folder = os.path.dirname(__file__)
+        folder = os.path.dirname(os.path.realpath(__file__))
         folder_name = os.path.basename(folder)
         while folder and not folder == '/':
             os.chdir(folder)
@@ -176,7 +176,7 @@ def copy_files_to_parent(file_list):
         Returns True if files copied or skipped without a problem. False
         is returned if the copy had to be aborted and rolled back
     """
-    our_folder = os.path.dirname(__file__)
+    our_folder = os.path.dirname(os.path.realpath(__file__))
     parent_folder = os.path.dirname(our_folder)
     copied_files = []
 
@@ -221,4 +221,4 @@ if __name__ == "__main__":
     generate_info()
     generate_dockerfile(SUBMODULE_FOLDER)
     if SUBMODULE_FOLDER:
-        copy_files_to_parent(['extractor_info.json', 'extractor.py'])
+        copy_files_to_parent(['extractor_info.json', 'extractor.py', 'Dockfile', 'tester.py'])
