@@ -150,8 +150,8 @@ Again, this is a good point to save your files to source control.
 
 ## Testing your Algorithm <a name="testing"/>
 
-Some sample plot images are stored in the "sample_plot_images.zip" file.
-Extract these files to use them for testing.
+Some sample plot images are stored in the "sample_plot_images.zip" file on [Google Drive](https://drive.google.com/file/d/1xWRU0YgK3Y9aUy5TdRxj14gmjLlozGxo/view?usp=sharing).
+Download the ZIP file and extract the image files to use them for testing.
 
 We provide a script named "tester.py" to assist in testing your algorithm.
 Running this script without any parameters will display information on how to use the script.
