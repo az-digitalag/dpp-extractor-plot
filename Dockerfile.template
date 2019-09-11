@@ -3,6 +3,7 @@ LABEL maintainer="Someone <someone@example.com>"
 
 # Standard extractor setup
 COPY extractor_info.json extractor.py configuration.py /home/extractor/
-ENV RABBITMQ_QUEUE="terra.dronepipeline.extractor"
+ENV \
+    RABBITMQ_QUEUE="terra.dronepipeline.extractor"
 
 # ADD ADDITIONAL INITIALIZATION STEPS HERE

@@ -100,7 +100,7 @@ def run_test(filename):
                 # Check if the return is iterable and comma separate the values if it is
                 try:
                     _ = iter(calc_val)
-                    print_val = ",".join(calc_val)
+                    print_val = ",".join(map(str, calc_val))
                 except Exception:
                     print_val = str(calc_val)
 

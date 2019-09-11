@@ -65,8 +65,9 @@ def generate_info():
     config['version'] = configuration.VERSION
     config['description'] = configuration.DESCRIPTION
     config['author'] = "%s <%s>" % (configuration.AUTHOR_NAME, configuration.AUTHOR_EMAIL)
+    config['contributors'].append(configuration.AUTHOR_NAME)
     if 'repository' in config:
-        config['repository']['repUrl'] = configuration.REPOSITORY
+        config['repository'][0]['repUrl'] = configuration.REPOSITORY
 
     with open("extractor_info.json", "w") as out_file:
         json.dump(config, out_file, indent=4)
@@ -96,12 +97,12 @@ def generate_dockerfile():
     template = [line.rstrip('\n') for line in open(DOCKERFILE_TEMPLATE_FILE_NAME, "r")]
     with open('Dockerfile', 'w') as out_file:
         for line in template:
-            if line.startswith('MAINTAINER'):
-                out_file.write("MAINTAINER {0} <{1}>\n".format(configuration.AUTHOR_NAME, \
+            if line.startswith('LABEL maintainer='):
+                out_file.write("LABEL maintainer=\"{0} <{1}>\"\n".format(configuration.AUTHOR_NAME, \
                                configuration.AUTHOR_EMAIL))
             elif line.lstrip().startswith('RABBITMQ_QUEUE'):
                 white_space = re.match(r"\s*", line).group()
-                out_file.write("{0}RABBITMQ_QUEUE=\"terra.dronepipeline.{1}\" \\\n". \
+                out_file.write("{0}RABBITMQ_QUEUE=\"terra.dronepipeline.{1}\" \n". \
                          format(white_space, extractor_name))
             else:
                 out_file.write("{0}\n".format(line))
