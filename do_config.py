@@ -17,10 +17,10 @@ BASE_CONFIG = \
         "author": None,
         "contributors": [],
         "contexts": [],
-        "repository": {
+        "repository": [{
             "repType": "git",
             "repUrl": None
-        },
+        }],
         "process": {
             "dataset": [
                 "file.added"
@@ -37,6 +37,9 @@ DOCKERFILE_TEMPLATE_FILE_NAME = "Dockerfile.template"
 def generate_info():
     """Generates the extractor_info.json file to the current folder
     """
+    # pylint: disable=global-statement
+    global BASE_CONFIG
+
     missing = []
     if not configuration.EXTRACTOR_NAME:
         missing.append("Extractor name")
@@ -50,6 +53,8 @@ def generate_info():
         missing.append("Author email")
     if not configuration.REPOSITORY:
         missing.append("Repository")
+    if not configuration.VARIABLE_NAMES:
+        missing.append("Variable names")
     if missing:
         raise RuntimeError("One or more configuration fields aren't defined in configuration.py: " \
                            + ", ".join(missing))
@@ -60,8 +65,9 @@ def generate_info():
     config['version'] = configuration.VERSION
     config['description'] = configuration.DESCRIPTION
     config['author'] = "%s <%s>" % (configuration.AUTHOR_NAME, configuration.AUTHOR_EMAIL)
+    config['contributors'].append(configuration.AUTHOR_NAME)
     if 'repository' in config:
-        config['repository']['repUrl'] = configuration.REPOSITORY
+        config['repository'][0]['repUrl'] = configuration.REPOSITORY
 
     with open("extractor_info.json", "w") as out_file:
         json.dump(config, out_file, indent=4)
@@ -70,6 +76,9 @@ def generate_info():
 def generate_dockerfile():
     """Genertes a Dockerfile file using the configured information
     """
+    # pylint: disable=global-statement
+    global DOCKERFILE_TEMPLATE_FILE_NAME
+
     missing = []
     if not configuration.EXTRACTOR_NAME:
         missing.append("Extractor name")
@@ -86,19 +95,20 @@ def generate_dockerfile():
     extractor_name = new_name.lower()
 
     template = [line.rstrip('\n') for line in open(DOCKERFILE_TEMPLATE_FILE_NAME, "r")]
-    with open("Dockerfile", "w") as out_file:
+    with open('Dockerfile', 'w') as out_file:
         for line in template:
-            if line.startswith("MAINTAINER"):
-                out_file.write("MAINTAINER {0} <{1}>\n".format(configuration.AUTHOR_NAME, \
+            if line.startswith('LABEL maintainer='):
+                out_file.write("LABEL maintainer=\"{0} <{1}>\"\n".format(configuration.AUTHOR_NAME, \
                                configuration.AUTHOR_EMAIL))
-            elif line.lstrip().startswith("RABBITMQ_QUEUE"):
+            elif line.lstrip().startswith('RABBITMQ_QUEUE'):
                 white_space = re.match(r"\s*", line).group()
-                out_file.write("{0}RABBITMQ_QUEUE=\"terra.dronepipeline.{1}\" \\\n". \
+                out_file.write("{0}RABBITMQ_QUEUE=\"terra.dronepipeline.{1}\" \n". \
                          format(white_space, extractor_name))
             else:
                 out_file.write("{0}\n".format(line))
 
 # Make the call to generate the file
 if __name__ == "__main__":
+    print('Configuring extractor')
     generate_info()
     generate_dockerfile()

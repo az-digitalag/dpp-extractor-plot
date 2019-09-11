@@ -9,6 +9,21 @@ import numpy as np
 import gdal
 
 import extractor
+import configuration
+
+def __isstring(value):
+    """Detects if the value is a string type
+    Parameter:
+        value - the value to check
+    Return:
+        True is returned if the variable is a string type and False if not
+    """
+    if isinstance(value, str):
+        return True
+    elif sys.version_info[0] < 3:
+        if isinstance(value, unicode):
+            return True
+    return False
 
 def print_usage():
     """Displays information on how to use this script
@@ -46,22 +61,50 @@ def check_arguments():
 
     return not have_errors
 
+def check_configuration():
+    """Checks if the configuration is setup properly for testing
+    """
+    if not configuration.VARIABLE_NAMES:
+        sys.stderr.write("Variable names configuration variable is not defined yet. Please define and try again")
+        sys.stderr.write("    Update configuration.py and set VALUE_NAMES variable with your variable names")
+        return False
+
+    return True
+
 def run_test(filename):
     """Runs the extractor code using pixels from the file
     Args:
         filename(str): Path to image file
-    Returns:
+    Return:
         The result of calling the extractor's calculate() method
     Notes:
         Assumes the path passed in is valid. An error is reported if
         the file is not an image file.
     """
     try:
-        of = gdal.Open(filename)
-        if of:
-            pix = np.array(of.ReadAsArray())
-            cc_val = extractor.calculate(np.rollaxis(pix, 0, 3))
-            print(filename + "," + str(cc_val))
+        open_file = gdal.Open(filename)
+        if open_file:
+            # Get the pixels and call the calculation
+            pix = np.array(open_file.ReadAsArray())
+            calc_val = extractor.calculate(np.rollaxis(pix, 0, 3))
+
+            # Check for unsupported types
+            if isinstance(calc_val, set):
+                raise RuntimeError("A 'set' type of data was returned and isn't supported. " \
+                                   "Please use a list or a tuple instead")
+
+            # Perform any type conversions to a printable string
+            if __isstring(calc_val):
+                print_val = calc_val
+            else:
+                # Check if the return is iterable and comma separate the values if it is
+                try:
+                    _ = iter(calc_val)
+                    print_val = ",".join(map(str, calc_val))
+                except Exception:
+                    print_val = str(calc_val)
+
+            print(filename + "," + print_val)
     except Exception as ex:
         sys.stderr.write("Exception caught: " + str(ex) + "\n")
         sys.stderr.write("    File: " + filename + "\n")
@@ -70,16 +113,18 @@ def process_files():
     """Processes the command line file/folder arguments
     """
     argc = len(sys.argv)
-    for idx in range(1, argc):
-        cur_path = sys.argv[idx]
-        if not os.path.isdir(cur_path):
-            run_test(cur_path)
-        else:
-            allfiles = [os.path.join(cur_path, fn) for fn in os.listdir(cur_path) \
-                                            if os.path.isfile(os.path.join(cur_path, fn))]
-            for one_file in allfiles:
-                run_test(one_file)
+    if argc:
+        print("Filename," + configuration.VARIABLE_NAMES)
+        for idx in range(1, argc):
+            cur_path = sys.argv[idx]
+            if not os.path.isdir(cur_path):
+                run_test(cur_path)
+            else:
+                allfiles = [os.path.join(cur_path, fn) for fn in os.listdir(cur_path) \
+                                                if os.path.isfile(os.path.join(cur_path, fn))]
+                for one_file in allfiles:
+                    run_test(one_file)
 
 if __name__ == "__main__":
-    if check_arguments():
+    if check_arguments() and check_configuration():
         process_files()
