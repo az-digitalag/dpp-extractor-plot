@@ -21,10 +21,10 @@ BASE_CONFIG = \
         "author": None,
         "contributors": [],
         "contexts": [],
-        "repository": {
+        "repository": [{
             "repType": "git",
             "repUrl": None
-        },
+        }],
         "process": {
             "dataset": [
                 "file.added"
@@ -113,6 +113,8 @@ def generate_info():
         missing.append("Author email")
     if not configuration.REPOSITORY:
         missing.append("Repository")
+    if not configuration.VARIABLE_NAMES:
+        missing.append("Variable names")
     if missing:
         raise RuntimeError("One or more configuration fields aren't defined in configuration.py: " \
                            + ", ".join(missing))
@@ -221,4 +223,4 @@ if __name__ == "__main__":
     generate_info()
     generate_dockerfile(SUBMODULE_FOLDER)
     if SUBMODULE_FOLDER:
-        copy_files_to_parent(['extractor_info.json', 'extractor.py', 'Dockfile', 'tester.py'])
+        copy_files_to_parent(['extractor_info.json', 'extractor.py', 'Dockerfile', 'tester.py'])
