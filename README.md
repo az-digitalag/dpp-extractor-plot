@@ -22,7 +22,7 @@ The following steps are needed when using this template. Note that all the secti
 5. Create your Docker image and make it available as outined in the [Making a Docker Image](#docker) section
 
 **Updating**
-If you are updating your code and you aren't using submodules, you must make sure you have secured a copy of your recent files.
+If you are updating your code from this repository, you must make sure you have secured a copy of your recent files.
 Merging with or pulling from the template GitHub repository will change files and may cause loss of code - unless you have a backup.
 The easiest approach is to make a local copy of `extractor.py`, `configuration.py`, and `Dockerfile`, update the source, then copy those files back.
 If there's a breaking change (meaning one of the just listed files needs to be modified), you can use your local copy to more easily manage a merge when necessary.
@@ -31,7 +31,7 @@ If there's a breaking change (meaning one of the just listed files needs to be m
 
 Before you start, make sure to have your own respoitory in which you can make your changes.
 
-At this point there are two main approaches that can be taken; clone or submodule the template code.
+At this point you will want to clone the template code.
 Another option is to download a .zip of the repository and unzip it into your project; we will not be covering this approach.
 If you are using [GitHub](https://github.com) you can clone the [repository](https://github.com/az-digitalag/Drone-Processing-Pipeline.git) as a [template](https://help.github.com/en/articles/creating-a-repository-from-a-template).
 
@@ -42,14 +42,6 @@ The disadvantage of cloning is that when the template gets updated you will need
 To clone the template, open a command window and change to the location of your repository on disk (for example, `cd ~/my-repo`).
 Next use git to clone the template project by running `git clone https://github.com/az-digitalag/dpp-extractor-plot.git extractor-ruby`.
 
-**Submodule**: \
-The advantage of using a submodule is that it's easy to update to the latest template code through a single command.
-The disadvantage of using a submodule is that the file system layout of a project is more complex.
-
-To use the submodule approach, create the submodule in your folder.
-For example, `git submodule add https://github.com/az-digitalag/dpp-extractor-plot.git ./extractor` will create the submodule link and place the files in a folder named "extractor".
-Follow the submodule specific command options in the following sections.
-
 At this time you may want to check your changes into source control.
 Note that after running the [Generate Files](#generate) step we recommend deleting a file.
 Depending upon your comfort level with the source control you use, you may want to wait until after that step to check files in.
@@ -59,8 +51,6 @@ Depending upon your comfort level with the source control you use, you may want 
 There are two steps needed for configuration:
 1. Update the file named "configuration.py" with your values
 2. Run the "do_config.py" script - this requires Python to be installed
-
-If you are using submodules, you will need to change into the submodule folder before performing these configuration steps.
 
 ### Edit configuration.py <a name="configuration_py"/>
 
@@ -101,9 +91,12 @@ It is used in conjunction with the AUTHOR_NAME field
 
 Specify the full URL to your code repository.
 
-### Generate files <a name="generate"/>
+**VARIABLE_NAMES** <a name="sub_variable_names"/>
 
-If you are using git submodules, this section assumes you are in the submodule folder.
+The name of your variable or a comma-separated list of variable names.
+These names are matched to the return value(s) of your algorithm.
+
+### Generate files <a name="generate"/>
 
 There are two principal files that are configuration based.
 The `do_config.py` script generates these files for you based upon the values entered into the [configuration.py](#configuration_py) file.
@@ -121,11 +114,9 @@ Alternatively, with the command shell, you might need to specify the python vers
 
 If the script encounters a problem, an error is reported.
 Correct the caause of the reported error and try running the command again.
+If the problem is caused by the script itself you can enter an issue as well as ask on our Slack channel.
 
 Once you are satisfied with the results you can delete the *do_config.py\** files.
-
-If you are using git submodules, the necessary files are copied to the parent folder.
-You will be making changes to the "extractor.py" file in the parent folder (**not** in the submodule folder).
 
 This is another good point to save your files to source control.
 
@@ -137,10 +128,19 @@ The *calculate* function receives a numpy array of RGB data representing a singl
 
 You will need to modify *extractor.py* to import the modules you need and perform the actions for your algorithm.
 
-The calling code expects a single value to be returned that can be represented as text.
-This can be a single string, a number value, a JSON object, or something else.
+The calling code expects a single value, list, tuple, or dictionary to be returned.
+The returned value(s) can be a single string, a number value, or something.
 It's important that the value returned has the accuracy needed.
 For example, if only two decimal places are needed for a real number, it would be best to return a string that exactly represents the desired value.
+
+When returning a list or tuple, the returned values are expected to be in the same order as the names defined in [VARIABLE_NAMES](#sub_variable_names) in the [Configuration](#configuration) section.
+
+When returning a dict, the key names are matched to the names defined in [VARIABLE_NAMES](#sub_variable_names) in the [Configuration](#configuration) section.
+The key names must exactly match the names defined in VARIABLE_NAMES.
+
+When returning a list, tuple, or dict, the number of values returned must match the number of names defined in VARIABLE_NAMES.
+It's considered an error when the number of values don't match the number of names.
+On a technical note, a returned dict must contain at least the keys defined in VARIABLE_NAMES; it can contain additional key/value pairs without an error being raised.
 
 ## Testing your Algorithm <a name="testing"/>
 
@@ -166,15 +166,17 @@ sample_plot_images/rgb_33_8_W.tif,7000
 sample_plot_images/rgb_5_11_W.tif,7000
 ```
 
+If you run into problems, the [Generate files](#generate) section above contains hints on running a python script.
+
 ## Making a Docker Image <a name="docker"/>
 
 In the [Configuration](#configuration) section the `do_config.py` script generated a file named "Dockerfile".
 This file has the basic configuration needed to build an extractor as a Docker container.
 
-Before trying to build the Docker container, you should review the *Dockerfile* file for additional installation steps.
-If more installation steps are needed, they can be added to the file as needed.
+Before trying to build the Docker container, you should review the *Dockerfile* file for additional installation steps specific for your extractor.
+If additional installation steps are needed, they can be added to the *Dockerfile* as needed.
 
-Once the *Dockerfile* file is ready, run the `docker build` command to generate your image.
+Once the *Dockerfile* file is ready, run the `docker build` command to generate your image (this is not the complete command needed to build a container).
 Refer to the Docker documentation and the `docker` application command line help for additional information on how to build an image.
 
 Once your extractor is built, it's recommended that it's placed on [Docker Hub](https://hub.docker.com/) or on a similar repository.
