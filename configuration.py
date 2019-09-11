@@ -30,4 +30,4 @@ REPOSITORY = ""
 # Note that variable names cannot have comma's in them: use a different separator instead. Also,
 # all white space is kept intact; don't add any extra whitespace since it may cause name comparisons
 # to fail
-VARIABLE_NAMES=""
+VARIABLE_NAMES = ""

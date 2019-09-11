@@ -1,6 +1,8 @@
 FROM agdrone/base_extractor_plot:1.0
 LABEL maintainer="Someone <someone@example.com>"
 
+# Standard extractor setup
 COPY extractor_info.json extractor.py configuration.py /home/extractor/
+ENV RABBITMQ_QUEUE="terra.dronepipeline.extractor"
 
 # ADD ADDITIONAL INITIALIZATION STEPS HERE

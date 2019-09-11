@@ -18,7 +18,7 @@ def __isstring(value):
     Return:
         True is returned if the variable is a string type and False if not
     """
-    if isinstance(value, str)
+    if isinstance(value, str):
         return True
     elif sys.version_info[0] < 3:
         if isinstance(value, unicode):
@@ -82,10 +82,10 @@ def run_test(filename):
         the file is not an image file.
     """
     try:
-        of = gdal.Open(filename)
-        if of:
+        open_file = gdal.Open(filename)
+        if open_file:
             # Get the pixels and call the calculation
-            pix = np.array(of.ReadAsArray())
+            pix = np.array(open_file.ReadAsArray())
             calc_val = extractor.calculate(np.rollaxis(pix, 0, 3))
 
             # Check for unsupported types
@@ -96,10 +96,10 @@ def run_test(filename):
             # Perform any type conversions to a printable string
             if __isstring(calc_val):
                 print_val = calc_val
-            else
+            else:
                 # Check if the return is iterable and comma separate the values if it is
                 try:
-                    val_iter = iter(calc_val)
+                    _ = iter(calc_val)
                     print_val = ",".join(calc_val)
                 except Exception:
                     print_val = str(calc_val)
@@ -126,5 +126,5 @@ def process_files():
                     run_test(one_file)
 
 if __name__ == "__main__":
-    if check_arguments() && check_configuration():
+    if check_arguments() and check_configuration():
         process_files()
