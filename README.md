@@ -5,6 +5,14 @@ This code is intended to be used as a template for writing additional plot-level
 
 Knowledge of the Python language and Docker images are necessary when using this template.
 
+## Quick Start
+1. Clone this repository into your own project
+2. Edit the *configuration.py* file
+3. Run do_config.py
+4. Edit the *extractor.py* file and replace the contents of the compute() function with your algorithm
+5. Test you algorithm by running *tester.py* specifying some [plot image files](https://drive.google.com/file/d/1xWRU0YgK3Y9aUy5TdRxj14gmjLlozGxo/view?usp=sharing)
+6. Build the docker image for your extractor and make it available
+
 ## Overview
 
 This templated code has been developed as an effort to make writing new extractors, and keeping them up to date, easier.
