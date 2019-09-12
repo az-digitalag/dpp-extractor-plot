@@ -61,7 +61,7 @@ def generate_info():
 
     # We make a deep copy so we can manipulate the dict without messing up the master
     config = copy.deepcopy(BASE_CONFIG)
-    config['name'] = configuration.EXTRACTOR_NAME
+    config['name'] = "terra.dronepipeline." + configuration.EXTRACTOR_NAME
     config['version'] = configuration.VERSION
     config['description'] = configuration.DESCRIPTION
     config['author'] = "%s <%s>" % (configuration.AUTHOR_NAME, configuration.AUTHOR_EMAIL)
