@@ -5,12 +5,14 @@ This code is intended to be used as a template for writing additional plot-level
 
 Knowledge of the Python language and Docker images are necessary when using this template.
 
+Extractors built with this template are able to store values in CSV files, [BETYdb](https://www.betydb.org/), and the TERRA REF [Geostreams database](https://docs.terraref.org/user-manual/data-products/environmental-conditions).
+
 ## Quick Start
 1. Clone this repository into your own project
 2. Edit the *configuration.py* file
 3. Run do_config.py
 4. Edit the *extractor.py* file and replace the contents of the compute() function with your algorithm
-5. Test you algorithm by running *tester.py* specifying some [plot image files](https://drive.google.com/file/d/1xWRU0YgK3Y9aUy5TdRxj14gmjLlozGxo/view?usp=sharing)
+5. Test your algorithm by running *tester.py* specifying some [plot image files](https://drive.google.com/file/d/1xWRU0YgK3Y9aUy5TdRxj14gmjLlozGxo/view?usp=sharing)
 6. Build the docker image for your extractor and make it available
 
 ## Overview
