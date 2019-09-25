@@ -32,7 +32,7 @@ BASE_CONFIG = \
     }
 
 # The template file name for Dockerfile
-DOCKERFILE_TEMPLATE_FILE_NAME = "Dockerfile.template"
+DOCKERFILE_TEMPLATE_FILE_NAMES = ["Dockerfile.template", "Dockerfile.cyverse_de.template"]
 
 def generate_info():
     """Generates the extractor_info.json file to the current folder
@@ -77,7 +77,7 @@ def generate_dockerfile():
     """Genertes a Dockerfile file using the configured information
     """
     # pylint: disable=global-statement
-    global DOCKERFILE_TEMPLATE_FILE_NAME
+    global DOCKERFILE_TEMPLATE_FILE_NAMES
 
     missing = []
     if not configuration.EXTRACTOR_NAME:
@@ -94,18 +94,21 @@ def generate_dockerfile():
                                             replace('\n', '_').replace('\r', '_')
     extractor_name = new_name.lower()
 
-    template = [line.rstrip('\n') for line in open(DOCKERFILE_TEMPLATE_FILE_NAME, "r")]
-    with open('Dockerfile', 'w') as out_file:
-        for line in template:
-            if line.startswith('LABEL maintainer='):
-                out_file.write("LABEL maintainer=\"{0} <{1}>\"\n".format(configuration.AUTHOR_NAME, \
-                               configuration.AUTHOR_EMAIL))
-            elif line.lstrip().startswith('RABBITMQ_QUEUE'):
-                white_space = re.match(r"\s*", line).group()
-                out_file.write("{0}RABBITMQ_QUEUE=\"terra.dronepipeline.{1}\" \n". \
-                         format(white_space, extractor_name))
-            else:
-                out_file.write("{0}\n".format(line))
+    for template_name in DOCKERFILE_TEMPLATE_FILE_NAMES:
+        template = [line.rstrip('\n') for line in open(template_name, "r")]
+        template_len = len('.template')
+        dockerfile_name = template_name[:(template_len * -1)]
+        with open(dockerfile_name, 'w') as out_file:
+            for line in template:
+                if line.startswith('LABEL maintainer='):
+                    out_file.write("LABEL maintainer=\"{0} <{1}>\"\n".format(configuration.AUTHOR_NAME, \
+                                   configuration.AUTHOR_EMAIL))
+                elif line.lstrip().startswith('RABBITMQ_QUEUE'):
+                    white_space = re.match(r"\s*", line).group()
+                    out_file.write("{0}RABBITMQ_QUEUE=\"terra.dronepipeline.{1}\" \n". \
+                             format(white_space, extractor_name))
+                else:
+                    out_file.write("{0}\n".format(line))
 
 # Make the call to generate the file
 if __name__ == "__main__":

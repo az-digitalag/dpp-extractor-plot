@@ -1,0 +1,7 @@
+FROM agdrone/cyverse_base_extractor_plot:1.0
+LABEL maintainer="Someone <someone@example.com>"
+
+# Standard extractor setup
+COPY extractor.py configuration.py /home/extractor/
+
+# ADD ADDITIONAL INITIALIZATION STEPS HERE
